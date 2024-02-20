@@ -42,7 +42,9 @@ public class LoginActivity extends AppCompatActivity {
                     // Login successful
                     Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
                     // Navigate to MainActivity
-                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    intent.putExtra("username", username); // Pass username to MainActivity
+                    startActivity(intent);
                     finish(); // Finish LoginActivity so user cannot go back to it with back button
                 } else {
                     // Login failed

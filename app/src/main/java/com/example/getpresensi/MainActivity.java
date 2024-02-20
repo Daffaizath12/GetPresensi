@@ -24,6 +24,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
@@ -67,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     LOCATION_PERMISSION_REQUEST_CODE);
         } else {
+            // Izin lokasi telah diberikan, mulai pembaruan lokasi
             startLocationUpdates();
         }
     }
@@ -87,6 +92,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
                                 mMap.addMarker(new MarkerOptions().position(currentLocation).title("Lokasi Anda"));
                                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15));
+
+                                // Mengirim data lokasi, tanggal, dan waktu ke HomeActivity
+                                sendPresensiData(location);
                             } else {
                                 // Lokasi terakhir tidak tersedia, cobalah mendapatkan lokasi baru
                                 requestNewLocation();
@@ -101,7 +109,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-
     private void requestNewLocation() {
         // Lakukan permintaan lokasi yang lebih baru
         // Anda dapat mengimplementasikan pembaruan lokasi menggunakan metode lain, misalnya LocationRequest dalam Google Play Services Location API
@@ -109,10 +116,38 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Toast.makeText(MainActivity.this, "Lokasi tidak tersedia", Toast.LENGTH_SHORT).show();
     }
 
+    private void sendPresensiData(Location location) {
+        // Mengirim data lokasi, tanggal, dan waktu ke HomeActivity
+        Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+        intent.putExtra("latitude", location.getLatitude());
+        intent.putExtra("longitude", location.getLongitude());
+
+        // Mendapatkan tanggal dan waktu saat ini
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+        String currentDate = dateFormat.format(new Date());
+        String currentTime = timeFormat.format(new Date());
+        intent.putExtra("date", currentDate);
+        intent.putExtra("time", currentTime);
+
+        // Simpan data presensi ke dalam database
+        DatabaseHelper db = new DatabaseHelper(this);
+        boolean isInserted = db.addPresensi(location.getLatitude(), location.getLongitude(), currentDate, currentTime);
+
+        if(isInserted){
+            startActivity(intent);
+        } else {
+            Toast.makeText(MainActivity.this, "Failed to insert data into database", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Izin lokasi diberikan, mulai pembaruan lokasi
                 startLocationUpdates();
             } else {
                 Toast.makeText(this, "Izin lokasi dibutuhkan untuk menampilkan peta", Toast.LENGTH_SHORT).show();

@@ -1,25 +1,66 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="16dp"
     tools:context=".HomeActivity">
 
     <TextView
-        android:id="@+id/location_info_textview"
+        android:id="@+id/presensi_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Lokasi: "
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"/>
+        android:text="Sudah Melakukan Presensi"
+        android:layout_centerHorizontal="true"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp"/>
 
     <TextView
-        android:id="@+id/time_info_textview"
+        android:id="@+id/location_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Waktu Presensi: "
-        android:layout_below="@id/location_info_textview"
-        android:layout_marginTop="8dp"
-        android:layout_marginStart="16dp"/>
+        android:layout_below="@id/presensi_text_view"
+        android:layout_marginTop="8dp"/>
+
+    <TextView
+        android:id="@+id/date_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/location_text_view"
+        android:layout_marginTop="8dp"/>
+
+    <TextView
+        android:id="@+id/time_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/date_text_view"
+        android:layout_marginTop="8dp"/>
+
+    <!-- Tombol Riwayat Presensi dan Profil -->
+    <LinearLayout
+        android:id="@+id/button_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/time_text_view"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/riwayat_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Riwayat Presensi"
+            android:layout_marginEnd="8dp"/>
+
+        <Button
+            android:id="@+id/profil_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Profil"
+            android:layout_marginStart="8dp"/>
+
+    </LinearLayout>
 
 </RelativeLayout>

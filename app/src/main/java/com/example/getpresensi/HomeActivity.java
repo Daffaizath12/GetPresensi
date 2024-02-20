@@ -1,9 +1,16 @@
 package com.example.getpresensi;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -12,30 +19,34 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        // Menerima data lokasi dan waktu dari MainActivity
+
+        // Dapatkan data lokasi, tanggal, dan waktu dari MainActivity
         double latitude = getIntent().getDoubleExtra("latitude", 0.0);
         double longitude = getIntent().getDoubleExtra("longitude", 0.0);
+        String date = getIntent().getStringExtra("date");
+        String time = getIntent().getStringExtra("time");
 
-        // Menginisialisasi TextView
-        TextView locationTextView = findViewById(R.id.location_info_textview);
-        TextView timeTextView = findViewById(R.id.time_info_textview);
+        // Atur TextViews dengan data presensi
+        TextView presensiTextView = findViewById(R.id.presensi_text_view);
+        presensiTextView.setText("Sudah Melakukan Presensi");
 
-        // Menampilkan data lokasi pengguna
-        String locationInfo = "Lokasi: " + latitude + ", " + longitude;
-        locationTextView.setText(locationInfo);
+        TextView locationTextView = findViewById(R.id.location_text_view);
+        locationTextView.setText("Lokasi: " + latitude + ", " + longitude);
 
-        // Mendapatkan waktu presensi saat ini (Anda dapat menggunakan library atau cara lain sesuai kebutuhan aplikasi Anda)
-        String currentTime = getCurrentTime();
+        TextView dateTextView = findViewById(R.id.date_text_view);
+        dateTextView.setText("Tanggal: " + date);
 
-        // Menampilkan waktu presensi pengguna
-        String timeInfo = "Waktu Presensi: " + currentTime;
-        timeTextView.setText(timeInfo);
-    }
+        TextView timeTextView = findViewById(R.id.time_text_view);
+        timeTextView.setText("Waktu: " + time);
 
-    // Metode untuk mendapatkan waktu saat ini (contoh sederhana, sesuaikan sesuai kebutuhan aplikasi Anda)
-    private String getCurrentTime() {
-        // Implementasi sederhana untuk mendapatkan waktu saat ini
-        // Misalnya, Anda dapat menggunakan SimpleDateFormat atau library waktu lainnya
-        return "12:00 PM"; // Contoh: mengembalikan waktu dalam format jam:menit AM/PM
+        Button riwayatButton = findViewById(R.id.riwayat_button);
+        riwayatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, RiwayatPresensiActivity.class);
+                startActivity(intent);
+            }
+            
+        });
     }
 }

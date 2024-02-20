@@ -6,10 +6,18 @@
     tools:context=".RegisterActivity">
 
     <EditText
+        android:id="@+id/editTextFullname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Fullname"
+        android:layout_margin="16dp"/>
+
+    <EditText
         android:id="@+id/editTextUsername"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Username"
+        android:layout_below="@id/editTextFullname"
         android:layout_margin="16dp"/>
 
     <EditText
