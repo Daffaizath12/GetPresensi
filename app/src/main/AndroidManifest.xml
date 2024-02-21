@@ -17,25 +17,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GetPresensi"
         tools:targetApi="31">
-        <activity
-            android:name=".RiwayatPresensiActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
-            android:name=".HomeActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCGgs-2MVWjykCi-Cj_cd4He4IfCSV1QXY" />
 
+        <activity
+            android:name=".PresensiActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
         <activity
             android:name=".RegisterActivity"
             android:exported="false">

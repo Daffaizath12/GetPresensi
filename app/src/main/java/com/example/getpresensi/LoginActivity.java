@@ -1,10 +1,6 @@
 package com.example.getpresensi;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
-import android.os.Bundle;
-
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -16,10 +12,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private EditText editTextUsername;
-    private EditText editTextPassword;
-    private Button buttonLogin;
-    private DatabaseHelper databaseHelper;
+    EditText editTextUsername, editTextPassword;
+    Button buttonLogin;
+    TextView textViewRegister;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,37 +24,45 @@ public class LoginActivity extends AppCompatActivity {
         editTextUsername = findViewById(R.id.editTextUsername);
         editTextPassword = findViewById(R.id.editTextPassword);
         buttonLogin = findViewById(R.id.buttonLogin);
-
-        databaseHelper = new DatabaseHelper(this);
+        textViewRegister = findViewById(R.id.textViewRegister);
 
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Tambahkan logika untuk melakukan login di sini
                 String username = editTextUsername.getText().toString().trim();
                 String password = editTextPassword.getText().toString().trim();
 
-                if (databaseHelper.checkUser(username, password)) {
-                    // Login successful
-                    Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
-                    // Navigate to MainActivity
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    intent.putExtra("username", username); // Pass username to MainActivity
-                    startActivity(intent);
-                    finish(); // Finish LoginActivity so user cannot go back to it with back button
+                // Contoh sederhana: validasi kosong
+                if (username.isEmpty() || password.isEmpty()) {
+                    Toast.makeText(LoginActivity.this, "Please enter username and password", Toast.LENGTH_SHORT).show();
                 } else {
-                    // Login failed
-                    Toast.makeText(LoginActivity.this, "Invalid username or password", Toast.LENGTH_SHORT).show();
+                    // Lakukan proses login
+                    // Misalnya, dengan memanggil metode dari kelas DatabaseHelper
+                    DatabaseHelper dbHelper = new DatabaseHelper(LoginActivity.this);
+                    boolean loginSuccessful = dbHelper.checkUser(username, password);
+                    if (loginSuccessful) {
+                        // Jika login berhasil, meneruskan data nama lengkap ke MainActivity
+                        String fullName = dbHelper.getFullName(username); // Anda perlu menambahkan metode ini di DatabaseHelper
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        intent.putExtra("fullName", fullName);
+                        startActivity(intent);
+                        finish(); // Menutup aktivitas login agar tidak dapat diakses kembali setelah login berhasil
+                    } else {
+                        Toast.makeText(LoginActivity.this, "Invalid username or password", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
 
-        TextView textViewRegister = findViewById(R.id.textViewRegister);
         textViewRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Intent to start RegisterActivity
+                // Menuju halaman registrasi
                 startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
             }
         });
     }
 }
+
+
