@@ -2,7 +2,10 @@ package com.example.getpresensi;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class PresensiActivity extends AppCompatActivity {
@@ -27,5 +30,21 @@ public class PresensiActivity extends AppCompatActivity {
         textViewUsername.setText("Nama Pengguna: " + username);
         textViewLocation.setText("Lokasi Presensi: " + location);
         textViewDateTime.setText("Waktu & Tanggal Presensi: " + dateTime);
+
+        // Di dalam onCreate method
+        Button buttonCekRiwayatPresensi = findViewById(R.id.buttonCekRiwayatPresensi);
+        buttonCekRiwayatPresensi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Mendapatkan nama pengguna dari intent
+                String username = getIntent().getStringExtra("username");
+
+                // Membuka RiwayatPresensiActivity dan mengirimkan username
+                Intent intent = new Intent(PresensiActivity.this, RiwayatPresensiActivity.class);
+                intent.putExtra("username", username);
+                startActivity(intent);
+            }
+        });
+
     }
 }

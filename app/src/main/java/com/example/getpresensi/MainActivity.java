@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -56,10 +57,56 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         buttonHadirSekarang.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Navigasi ke halaman PresensiActivity
-                navigateToPresensiActivity();
+                // Mendapatkan nama pengguna dari intent
+                String username = getIntent().getStringExtra("fullName");
+
+                // Mendapatkan lokasi terkini
+                String location = "Lokasi terkini belum didapatkan";
+
+                // Mendapatkan waktu dan tanggal sekarang
+                SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy HH:mm:ss", Locale.getDefault());
+                String dateTime = sdf.format(new Date());
+
+                // Simpan data presensi ke dalam database
+                DatabaseHelper dbHelper = new DatabaseHelper(MainActivity.this);
+                dbHelper.addRiwayatPresensi(username, location, dateTime);
+
+                // Navigasi ke halaman PresensiActivity dan mengirimkan informasi
+                Intent intent = new Intent(MainActivity.this, PresensiActivity.class);
+                intent.putExtra("location", location);
+                intent.putExtra("username", username);
+                intent.putExtra("dateTime", dateTime);
+                startActivity(intent);
             }
         });
+
+
+        // Ketika tombol Cek Profile diklik
+        Button buttonCekProfile = findViewById(R.id.buttonCekProfile);
+        buttonCekProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String fullName = getIntent().getStringExtra("fullName");
+
+                // Membuat instance DatabaseHelper
+                DatabaseHelper dbHelper = new DatabaseHelper(MainActivity.this);
+
+                // Memanggil fungsi untuk mencari username berdasarkan fullName
+                String username = dbHelper.getUsernameByFullName(fullName);
+
+                // Jika username ditemukan, kirim ke ProfileActivity
+                if (username != null) {
+                    Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                    intent.putExtra("username", username);
+                    intent.putExtra("fullName", fullName);
+                    startActivity(intent);
+                } else {
+                    // Jika tidak ditemukan, beri pesan kesalahan
+                    Toast.makeText(MainActivity.this, "Username not found", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
 
         // Minta izin lokasi jika belum diberikan
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
@@ -71,25 +118,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             // Jika izin sudah diberikan, dapatkan lokasi pengguna
             getLastLocation();
         }
-    }
-
-    private void navigateToPresensiActivity() {
-        // Mendapatkan nama pengguna dari intent
-        String username = getIntent().getStringExtra("fullName");
-
-        // Mendapatkan lokasi terkini
-        String location = "Lokasi terkini belum didapatkan";
-
-        // Mendapatkan waktu dan tanggal sekarang
-        SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy HH:mm:ss", Locale.getDefault());
-        String dateTime = sdf.format(new Date());
-
-        // Navigasi ke halaman PresensiActivity dan mengirimkan informasi
-        Intent intent = new Intent(MainActivity.this, PresensiActivity.class);
-        intent.putExtra("location", location);
-        intent.putExtra("username", username);
-        intent.putExtra("dateTime", dateTime);
-        startActivity(intent);
     }
 
 

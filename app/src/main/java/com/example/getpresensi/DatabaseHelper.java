@@ -5,17 +5,24 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "myapp.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     public static final String TABLE_USERS = "users";
+    public static final String TABLE_PRESENSI = "riwayat_presensi";
     public static final String COLUMN_ID = "id";
     public static final String COLUMN_FULL_NAME = "full_name";
     public static final String COLUMN_USERNAME = "username";
     public static final String COLUMN_PASSWORD = "password";
+    public static final String COLUMN_LOCATION = "location";
+    public static final String COLUMN_DATETIME = "dateTime";
 
     private static final String CREATE_TABLE_USERS = "CREATE TABLE " +
             TABLE_USERS + "(" +
@@ -24,6 +31,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             COLUMN_USERNAME + " TEXT, " +
             COLUMN_PASSWORD + " TEXT" + ")";
 
+    private static final String CREATE_TABLE_PRESENSI = "CREATE TABLE " +
+            TABLE_PRESENSI + "(" +
+            COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            COLUMN_USERNAME + " TEXT, " +
+            COLUMN_LOCATION + " TEXT, " +
+            COLUMN_DATETIME + " TEXT" + ")";
+
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -31,11 +45,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE_USERS);
+        db.execSQL(CREATE_TABLE_PRESENSI);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PRESENSI);
         onCreate(db);
     }
 
@@ -49,6 +65,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return id;
     }
+
+    public long addRiwayatPresensi(String username, String location, String dateTime) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_USERNAME, username);
+        values.put(COLUMN_LOCATION, location);
+        values.put(COLUMN_DATETIME, dateTime);
+        long id = db.insert(TABLE_PRESENSI, null, values);
+        db.close();
+        return id;
+    }
+
 
     public boolean checkUser(String username, String password) {
         String[] columns = {
@@ -93,5 +121,73 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         db.close();
         return fullName;
+    }
+
+    // Metode untuk mengambil semua data dari tabel Presensi
+    public List<RiwayatPresensi> getRiwayatPresensiByUsername(String username) {
+        List<RiwayatPresensi> riwayatPresensiList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // Kueri untuk mendapatkan riwayat presensi berdasarkan username
+        String query = "SELECT * FROM " + TABLE_PRESENSI + " WHERE " + COLUMN_USERNAME + " = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{username});
+
+        try {
+            // Periksa apakah cursor tidak kosong dan memiliki data
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    // Baca data dari cursor dan tambahkan ke daftar riwayatPresensiList
+                    String location = cursor.getString(cursor.getColumnIndex(COLUMN_LOCATION));
+                    String dateTime = cursor.getString(cursor.getColumnIndex(COLUMN_DATETIME));
+                    RiwayatPresensi riwayatPresensi = new RiwayatPresensi();
+                    riwayatPresensi.setLocation(location);
+                    riwayatPresensi.setDateTime(dateTime);
+                    riwayatPresensiList.add(riwayatPresensi);
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            Log.e("DatabaseHelper", "Error retrieving presensi data: " + e.getMessage());
+        } finally {
+            // Pastikan untuk menutup cursor dan database setelah selesai
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+
+        return riwayatPresensiList;
+    }
+
+
+    // Fungsi untuk mencari username berdasarkan fullName
+    public String getUsernameByFullName(String fullName) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String username = null;
+
+        // Lakukan kueri ke database untuk mencari username berdasarkan fullName
+        String query = "SELECT " + COLUMN_USERNAME + " FROM " + TABLE_USERS + " WHERE " + COLUMN_FULL_NAME + " = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{fullName});
+
+        // Periksa apakah cursor bergerak ke baris pertama dan hasil kueri tidak kosong
+        if (cursor.moveToFirst() && cursor.getCount() > 0) {
+            int columnIndex = cursor.getColumnIndex(COLUMN_USERNAME);
+            // Pastikan bahwa indeks kolom ditemukan
+            if (columnIndex != -1) {
+                username = cursor.getString(columnIndex);
+            }
+        }
+
+        // Tutup cursor dan kembalikan nilai username
+        cursor.close();
+        return username;
+    }
+
+    // Metode untuk memperbarui nama lengkap pengguna berdasarkan username
+    public void updateFullName(String username, String newFullName) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_FULL_NAME, newFullName);
+        db.update(TABLE_USERS, values, COLUMN_USERNAME + " = ?", new String[]{username});
+        db.close();
     }
 }

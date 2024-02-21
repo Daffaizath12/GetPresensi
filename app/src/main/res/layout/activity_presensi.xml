@@ -39,4 +39,11 @@
         android:textSize="16sp"
         android:layout_marginBottom="8dp"/>
 
+    <Button
+        android:id="@+id/buttonCekRiwayatPresensi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Riwayat Presensi"
+        android:layout_margin="16dp" />
+
 </LinearLayout>
