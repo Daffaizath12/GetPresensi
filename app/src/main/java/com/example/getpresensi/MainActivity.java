@@ -3,6 +3,8 @@ package com.example.getpresensi;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,8 +28,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -55,28 +59,66 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         Button buttonHadirSekarang = findViewById(R.id.buttonHadirSekarang);
         buttonHadirSekarang.setOnClickListener(new View.OnClickListener() {
+            // Dalam metode onClick untuk buttonHadirSekarang
             @Override
             public void onClick(View v) {
                 // Mendapatkan nama pengguna dari intent
                 String username = getIntent().getStringExtra("fullName");
 
-                // Mendapatkan lokasi terkini
-                String location = "Lokasi terkini belum didapatkan";
+                // Mendeklarasikan final variabel yang dapat diakses dari dalam inner class
+                final String[] currentLocation = {"Lokasi terkini belum didapatkan"};
 
-                // Mendapatkan waktu dan tanggal sekarang
-                SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy HH:mm:ss", Locale.getDefault());
-                String dateTime = sdf.format(new Date());
+                // Cek apakah izin lokasi sudah diberikan sebelumnya
+                if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED) {
+                    // Izin sudah diberikan, coba mendapatkan lokasi terkini
+                    fusedLocationClient.getLastLocation()
+                            .addOnSuccessListener(MainActivity.this, new OnSuccessListener<Location>() {
+                                @Override
+                                public void onSuccess(Location location) {
+                                    if (location != null) {
+                                        // Lokasi berhasil didapatkan
+                                        double latitude = location.getLatitude();
+                                        double longitude = location.getLongitude();
 
-                // Simpan data presensi ke dalam database
-                DatabaseHelper dbHelper = new DatabaseHelper(MainActivity.this);
-                dbHelper.addRiwayatPresensi(username, location, dateTime);
+                                        // Mengonversi koordinat menjadi alamat menggunakan Geocoder
+                                        Geocoder geocoder = new Geocoder(MainActivity.this, Locale.getDefault());
+                                        try {
+                                            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+                                            if (addresses != null && !addresses.isEmpty()) {
+                                                Address address = addresses.get(0);
+                                                currentLocation[0] = address.getAddressLine(0); // Mendapatkan alamat lengkap
+                                            }
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
 
-                // Navigasi ke halaman PresensiActivity dan mengirimkan informasi
-                Intent intent = new Intent(MainActivity.this, PresensiActivity.class);
-                intent.putExtra("location", location);
-                intent.putExtra("username", username);
-                intent.putExtra("dateTime", dateTime);
-                startActivity(intent);
+                                        // Mendapatkan waktu dan tanggal sekarang
+                                        SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy HH:mm:ss", Locale.getDefault());
+                                        String dateTime = sdf.format(new Date());
+
+                                        // Simpan data presensi ke dalam database
+                                        DatabaseHelper dbHelper = new DatabaseHelper(MainActivity.this);
+                                        dbHelper.addRiwayatPresensi(username, currentLocation[0], dateTime);
+
+                                        // Navigasi ke halaman PresensiActivity dan mengirimkan informasi
+                                        Intent intent = new Intent(MainActivity.this, PresensiActivity.class);
+                                        intent.putExtra("location", currentLocation[0]);
+                                        intent.putExtra("username", username);
+                                        intent.putExtra("dateTime", dateTime);
+                                        startActivity(intent);
+                                    } else {
+                                        // Tidak dapat mendapatkan lokasi terkini
+                                        Toast.makeText(MainActivity.this, "Location not available", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                } else {
+                    // Izin belum diberikan, minta izin lokasi kepada pengguna
+                    ActivityCompat.requestPermissions(MainActivity.this,
+                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                            LOCATION_PERMISSION_REQUEST_CODE);
+                }
             }
         });
 
