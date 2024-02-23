@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +16,7 @@ public class EditProfileActivity extends AppCompatActivity {
     private Button buttonSaveChanges;
     private DatabaseHelper databaseHelper;
     private String username;
+    private ImageView profile_back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,11 +44,19 @@ public class EditProfileActivity extends AppCompatActivity {
                 databaseHelper.updateFullName(username, newFullName);
 
                 // Kembali ke ProfileActivity setelah menyimpan perubahan
-                Intent intent = new Intent(EditProfileActivity.this, ProfileActivity.class);
+                Intent intent = new Intent(EditProfileActivity.this, MainActivity.class);
                 intent.putExtra("username", username);
                 intent.putExtra("fullName", newFullName);
                 startActivity(intent);
                 finish(); // Menutup aktivitas edit profile
+            }
+        });
+
+        ImageView profile_back = findViewById(R.id.profile_back);
+        profile_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
             }
         });
     }

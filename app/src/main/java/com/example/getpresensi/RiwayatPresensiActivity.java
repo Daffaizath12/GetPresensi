@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ public class RiwayatPresensiActivity extends AppCompatActivity {
     private RiwayatPresensiAdapter adapter;
     private List<RiwayatPresensi> riwayatPresensiList;
     private TextView textViewNoData;
+    private ImageView riwayat_back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +27,15 @@ public class RiwayatPresensiActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recyclerView);
         textViewNoData = findViewById(R.id.textViewNoData);
+        riwayat_back = findViewById(R.id.riwayat_back);
+
+        riwayat_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
         riwayatPresensiList = new ArrayList<>();
         adapter = new RiwayatPresensiAdapter(this, riwayatPresensiList);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());

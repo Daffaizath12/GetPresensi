@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <TextView
@@ -29,17 +30,30 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:text="Presensi Sekarang"
-            android:layout_margin="16dp"/>
+            android:text="Present"
+            android:backgroundTint="@color/purple"
+            android:layout_margin="16dp"
+            app:cornerRadius="20dp" />
+
+<!--        <Button-->
+<!--            android:id="@+id/buttonCekRiwayatPresensi"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_weight="2"-->
+<!--            android:text="History"-->
+<!--            android:backgroundTint="@color/purple"-->
+<!--            android:layout_margin="16dp"-->
+<!--            app:cornerRadius="20dp" />-->
 
         <Button
             android:id="@+id/buttonCekProfile"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:text="Profile"
-            android:layout_margin="16dp"/>
-
+            android:backgroundTint="@color/purple"
+            android:layout_margin="16dp"
+            app:cornerRadius="20dp" />
     </LinearLayout>
 
 </LinearLayout>

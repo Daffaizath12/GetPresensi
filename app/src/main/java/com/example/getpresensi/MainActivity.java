@@ -122,6 +122,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
+//        Button buttonCekRiwayatPresensi = findViewById(R.id.buttonCekRiwayatPresensi);
+//        buttonCekRiwayatPresensi.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(MainActivity.this, RiwayatPresensiActivity.class);
+//                startActivity(intent);
+//            }
+//        });
 
         // Ketika tombol Cek Profile diklik
         Button buttonCekProfile = findViewById(R.id.buttonCekProfile);

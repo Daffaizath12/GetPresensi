@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +13,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     EditText editTextFullName, editTextUsername, editTextPassword;
     Button buttonRegister;
+    ImageView register_back;
 
     DatabaseHelper databaseHelper;
 
@@ -24,8 +26,16 @@ public class RegisterActivity extends AppCompatActivity {
         editTextUsername = findViewById(R.id.editTextUsername);
         editTextPassword = findViewById(R.id.editTextPassword);
         buttonRegister = findViewById(R.id.buttonRegister);
+        register_back = findViewById(R.id.register_back);
 
         databaseHelper = new DatabaseHelper(this);
+
+        register_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
         buttonRegister.setOnClickListener(new View.OnClickListener() {
             @Override

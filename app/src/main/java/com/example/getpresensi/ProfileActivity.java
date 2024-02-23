@@ -1,10 +1,12 @@
 package com.example.getpresensi;
 
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,6 +14,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private TextView textViewFullname;
     private TextView textViewUsername;
+    private ImageView profile_back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +42,14 @@ public class ProfileActivity extends AppCompatActivity {
                 intent.putExtra("username", username);
                 intent.putExtra("fullName", fullName);
                 startActivity(intent);
+            }
+        });
+
+        ImageView profile_back = findViewById(R.id.profile_back);
+        profile_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
             }
         });
 
