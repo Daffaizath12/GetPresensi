@@ -44,7 +44,10 @@ public class PresensiActivity extends AppCompatActivity {
 
                 // Membuka RiwayatPresensiActivity dan mengirimkan username
                 Intent intent = new Intent(PresensiActivity.this, RiwayatPresensiActivity.class);
+                intent.putExtra("location", location);
+                intent.putExtra("dateTime", dateTime);
                 intent.putExtra("username", username);
+                intent.putExtra("fullName", username);
                 startActivity(intent);
             }
         });
@@ -53,7 +56,15 @@ public class PresensiActivity extends AppCompatActivity {
         presensi_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBackPressed();
+                // Mendapatkan nama pengguna dari intent
+                String username = getIntent().getStringExtra("username");
+                String fullName = getIntent().getStringExtra("fullName");
+
+                // Kembali ke MainActivity dan mengirimkan fullName
+                Intent intent = new Intent(PresensiActivity.this, MainActivity.class);
+                intent.putExtra("fullName", fullName);
+                startActivity(intent);
+                finish(); // Menutup PresensiActivity
             }
         });
 

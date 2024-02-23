@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -29,13 +30,6 @@ public class RiwayatPresensiActivity extends AppCompatActivity {
         textViewNoData = findViewById(R.id.textViewNoData);
         riwayat_back = findViewById(R.id.riwayat_back);
 
-        riwayat_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
-
         riwayatPresensiList = new ArrayList<>();
         adapter = new RiwayatPresensiAdapter(this, riwayatPresensiList);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
@@ -44,6 +38,8 @@ public class RiwayatPresensiActivity extends AppCompatActivity {
 
         // Mendapatkan username pengguna yang sedang login
         String username = getIntent().getStringExtra("username");
+        String location = getIntent().getStringExtra("location");
+        String dateTime = getIntent().getStringExtra("dateTime");
 
         // Membuat instance DatabaseHelper
         DatabaseHelper dbHelper = new DatabaseHelper(this);
@@ -60,5 +56,19 @@ public class RiwayatPresensiActivity extends AppCompatActivity {
             recyclerView.setVisibility(View.GONE);
             textViewNoData.setVisibility(View.VISIBLE);
         }
+
+        riwayat_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Kembali ke MenuActivity
+                Intent intent = new Intent(RiwayatPresensiActivity.this, PresensiActivity.class);
+                intent.putExtra("username", username);
+                intent.putExtra("location", location);
+                intent.putExtra("dateTime", dateTime);
+                intent.putExtra("fullName", username);
+                startActivity(intent);
+                finish(); // Menutup LoginActivity
+            }
+        });
     }
 }

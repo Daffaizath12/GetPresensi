@@ -103,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                                         // Navigasi ke halaman PresensiActivity dan mengirimkan informasi
                                         Intent intent = new Intent(MainActivity.this, PresensiActivity.class);
+                                        intent.putExtra("fullName", username);
                                         intent.putExtra("location", currentLocation[0]);
                                         intent.putExtra("username", username);
                                         intent.putExtra("dateTime", dateTime);
@@ -121,15 +122,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             }
         });
-
-//        Button buttonCekRiwayatPresensi = findViewById(R.id.buttonCekRiwayatPresensi);
-//        buttonCekRiwayatPresensi.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(MainActivity.this, RiwayatPresensiActivity.class);
-//                startActivity(intent);
-//            }
-//        });
 
         // Ketika tombol Cek Profile diklik
         Button buttonCekProfile = findViewById(R.id.buttonCekProfile);

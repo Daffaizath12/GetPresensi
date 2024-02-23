@@ -49,7 +49,12 @@ public class ProfileActivity extends AppCompatActivity {
         profile_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBackPressed();
+                // Kembali ke MainActivity
+                Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
+                intent.putExtra("username", username);
+                intent.putExtra("fullName", fullName);
+                startActivity(intent);
+                finish(); // Menutup ProfileActivity
             }
         });
 

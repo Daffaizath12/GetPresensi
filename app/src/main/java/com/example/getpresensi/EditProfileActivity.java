@@ -44,7 +44,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 databaseHelper.updateFullName(username, newFullName);
 
                 // Kembali ke ProfileActivity setelah menyimpan perubahan
-                Intent intent = new Intent(EditProfileActivity.this, MainActivity.class);
+                Intent intent = new Intent(EditProfileActivity.this, ProfileActivity.class);
                 intent.putExtra("username", username);
                 intent.putExtra("fullName", newFullName);
                 startActivity(intent);
@@ -56,7 +56,12 @@ public class EditProfileActivity extends AppCompatActivity {
         profile_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBackPressed();
+                // Kembali ke MenuActivity
+                Intent intent = new Intent(EditProfileActivity.this, ProfileActivity.class);
+                intent.putExtra("username", username);
+                intent.putExtra("fullName", fullName);
+                startActivity(intent);
+                finish(); // Menutup LoginActivity;
             }
         });
     }
